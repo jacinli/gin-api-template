@@ -10,6 +10,9 @@ import (
 func SetupRouter() *gin.Engine {
 	r := gin.Default()
 
+	// 使用请求ID中间件
+	r.Use(middlewares.RequestIDMiddleware())
+
 	// 使用日志中间件
 	r.Use(middlewares.LoggingMiddleware())
 

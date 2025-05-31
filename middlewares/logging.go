@@ -28,8 +28,8 @@ func LoggingMiddleware() gin.HandlerFunc {
 		blw := &bodyLogWriter{body: bytes.NewBufferString(""), ResponseWriter: c.Writer}
 		c.Writer = blw
 
-		// 记录请求信息
-		utils.LogInfo(fmt.Sprintf("Request: %s %s | IP: %s | User-Agent: %s | Body: %s",
+		// 记录请求信息 - 自动包含 Request ID
+		utils.LogInfoWithContext(c, fmt.Sprintf("Request: %s %s | IP: %s | User-Agent: %s | Body: %s",
 			c.Request.Method,
 			c.Request.URL.Path,
 			c.ClientIP(),
@@ -42,8 +42,8 @@ func LoggingMiddleware() gin.HandlerFunc {
 		// 计算处理时间
 		duration := time.Since(startTime)
 
-		// 记录响应信息
-		utils.LogInfo(fmt.Sprintf("Response: %s %s | Status: %d | Duration: %v | Response: %s",
+		// 记录响应信息 - 自动包含 Request ID
+		utils.LogInfoWithContext(c, fmt.Sprintf("Response: %s %s | Status: %d | Duration: %v | Response: %s",
 			c.Request.Method,
 			c.Request.URL.Path,
 			c.Writer.Status(),
