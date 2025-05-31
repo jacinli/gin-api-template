@@ -3,6 +3,8 @@ package middlewares
 import (
 	"context"
 
+	"gin-api-template/utils"
+
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
@@ -23,14 +25,19 @@ func RequestIDMiddleware() gin.HandlerFunc {
 		// 将 Request ID 存储到 Context 中
 		c.Set(RequestIDKey, requestID)
 
-		// 设置到标准 context.Context 中，供全局使用
-		ctx := context.WithValue(c.Request.Context(), RequestIDKey, requestID)
-		c.Request = c.Request.WithContext(ctx)
+		// 创建带 Request ID 的 context
+		ctx := context.WithValue(context.Background(), utils.RequestIDKey, requestID)
+
+		// 设置到全局 context (当前 goroutine)
+		utils.SetRequestContext(ctx)
 
 		// 设置响应头
 		c.Header(RequestIDKey, requestID)
 
 		// 继续处理请求
 		c.Next()
+
+		// 请求结束后清理 context
+		utils.ClearRequestContext()
 	}
 }

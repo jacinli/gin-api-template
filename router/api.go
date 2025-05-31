@@ -8,12 +8,16 @@ import (
 )
 
 func SetupRouter() *gin.Engine {
-	r := gin.Default()
+	// 使用 gin.New() 而不是 gin.Default()，避免默认的日志中间件
+	r := gin.New()
 
-	// 使用请求ID中间件
+	// 添加 Recovery 中间件（防止 panic 导致服务崩溃）
+	r.Use(gin.Recovery())
+
+	// 使用 Request ID 中间件 (必须在日志中间件之前)
 	r.Use(middlewares.RequestIDMiddleware())
 
-	// 使用日志中间件
+	// 使用我们自定义的日志中间件
 	r.Use(middlewares.LoggingMiddleware())
 
 	// API 路由组

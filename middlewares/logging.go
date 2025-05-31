@@ -29,7 +29,7 @@ func LoggingMiddleware() gin.HandlerFunc {
 		c.Writer = blw
 
 		// 记录请求信息 - 自动包含 Request ID
-		utils.LogInfoWithContext(c, fmt.Sprintf("Request: %s %s | IP: %s | User-Agent: %s | Body: %s",
+		utils.LogInfo(fmt.Sprintf("Request: %s %s | IP: %s | User-Agent: %s | Body: %s",
 			c.Request.Method,
 			c.Request.URL.Path,
 			c.ClientIP(),
@@ -43,7 +43,7 @@ func LoggingMiddleware() gin.HandlerFunc {
 		duration := time.Since(startTime)
 
 		// 记录响应信息 - 自动包含 Request ID
-		utils.LogInfoWithContext(c, fmt.Sprintf("Response: %s %s | Status: %d | Duration: %v | Response: %s",
+		utils.LogInfo(fmt.Sprintf("Response: %s %s | Status: %d | Duration: %v | Response: %s",
 			c.Request.Method,
 			c.Request.URL.Path,
 			c.Writer.Status(),

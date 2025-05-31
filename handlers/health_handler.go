@@ -10,8 +10,8 @@ import (
 
 // HealthCheckHandler 健康检查处理器
 func HealthCheckHandler(c *gin.Context) {
-	// 使用带 context 的日志，自动包含 Request ID
-	utils.LogInfoWithContext(c, "Health check handler called")
+	// 直接使用 LogInfo，会自动包含 Request ID
+	utils.LogInfo("Health check handler called")
 
 	// 调用业务逻辑层
 	result := services.GetHealthStatus()
