@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  gin-api:
+    build: .
+    ports:
+      - "8080:8080"
+    volumes:
+      - .env:/app/.env  # 确保文件名一致
+    env_file:
+      - .env
+    restart: unless-stopped

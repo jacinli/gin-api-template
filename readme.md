@@ -14,3 +14,9 @@ go mod init gin-api-template
 
 go mod tidy
 go mod download
+
+
+docker-compose build
+
+docker-compose up -d
+docker build -t gin-api-template .
