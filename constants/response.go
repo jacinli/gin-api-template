@@ -48,9 +48,9 @@ func SuccessWithMessage(c *gin.Context, message string, data interface{}) {
 	})
 }
 
-// Error 错误响应
+// Error 错误响应 - 统一返回 HTTP 200，业务错误码在 Code 字段
 func Error(c *gin.Context, code int, message string) {
-	c.JSON(code, APIResponse{
+	c.JSON(http.StatusOK, APIResponse{ // 改为统一返回 200
 		Code:      code,
 		Message:   message,
 		RequestID: getRequestID(c),
@@ -60,15 +60,15 @@ func Error(c *gin.Context, code int, message string) {
 
 // BadRequest 400 错误
 func BadRequest(c *gin.Context, message string) {
-	Error(c, http.StatusBadRequest, message)
+	Error(c, 400, message)
 }
 
 // NotFound 404 错误
 func NotFound(c *gin.Context, message string) {
-	Error(c, http.StatusNotFound, message)
+	Error(c, 404, message)
 }
 
 // InternalServerError 500 错误
 func InternalServerError(c *gin.Context, message string) {
-	Error(c, http.StatusInternalServerError, message)
+	Error(c, 500, message)
 }

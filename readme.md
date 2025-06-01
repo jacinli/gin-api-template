@@ -20,3 +20,7 @@ docker-compose build
 
 docker-compose up -d
 docker build -t gin-api-template .
+
+
+安装 swagger
+go install github.com/swaggo/swag/cmd/swag@latest
