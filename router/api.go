@@ -13,7 +13,8 @@ func SetupRouter() *gin.Engine {
 
 	// 添加 Recovery 中间件（防止 panic 导致服务崩溃）
 	r.Use(gin.Recovery())
-
+	// 使用 CORS 中间件 (必须在其他中间件之前)
+	r.Use(middlewares.CORSMiddleware())
 	// 使用 Request ID 中间件 (必须在日志中间件之前)
 	r.Use(middlewares.RequestIDMiddleware())
 
