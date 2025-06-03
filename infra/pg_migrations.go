@@ -16,11 +16,9 @@ func RunPGMigrations() {
 
 	utils.LogInfo("Starting PostgreSQL migration...")
 
-	// 添加你的模型到这里
-	err := DB.AutoMigrate(
-		&models.User{},
-		// 在这里添加更多模型...
-	)
+	// 动态获取所有模型
+	allModels := models.GetAllModels()
+	err := DB.AutoMigrate(allModels...)
 
 	if err != nil {
 		utils.LogError("PostgreSQL migration failed: " + err.Error())
@@ -39,11 +37,9 @@ func RollbackPGMigrations() {
 
 	utils.LogInfo("Starting PostgreSQL rollback...")
 
-	// 删除表（谨慎操作！）
-	err := DB.Migrator().DropTable(
-		&models.User{},
-		// 添加要删除的表...
-	)
+	// 动态获取所有模型并删除表
+	allModels := models.GetAllModels()
+	err := DB.Migrator().DropTable(allModels...)
 
 	if err != nil {
 		utils.LogError("PostgreSQL rollback failed: " + err.Error())
@@ -62,17 +58,23 @@ func CheckPGMigrationStatus() {
 
 	fmt.Println("=== Migration Status ===")
 
-	// 检查表是否存在
-	tables := []interface{}{
-		&models.User{},
-		// 添加要检查的模型...
-	}
+	// 获取所有模型
+	allModels := models.GetAllModels()
 
-	for _, table := range tables {
-		if DB.Migrator().HasTable(table) {
-			fmt.Printf("✅ Table exists: %s\n", DB.Statement.Schema.Table)
+	for _, model := range allModels {
+		if DB.Migrator().HasTable(model) {
+			// 获取表名 (通过 TableName 方法或者类型名)
+			if tableNamer, ok := model.(interface{ TableName() string }); ok {
+				fmt.Printf("✅ Table exists: %s\n", tableNamer.TableName())
+			} else {
+				fmt.Printf("✅ Table exists: %v\n", model)
+			}
 		} else {
-			fmt.Printf("❌ Table missing: %s\n", DB.Statement.Schema.Table)
+			if tableNamer, ok := model.(interface{ TableName() string }); ok {
+				fmt.Printf("❌ Table missing: %s\n", tableNamer.TableName())
+			} else {
+				fmt.Printf("❌ Table missing: %v\n", model)
+			}
 		}
 	}
 }
