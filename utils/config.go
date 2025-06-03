@@ -13,6 +13,13 @@ type Config struct {
 
 	// CORS 配置
 	CORSAllowedOrigins []string
+
+	// PostgreSQL 配置
+	DBHost     string
+	DBUser     string
+	DBPassword string
+	DBName     string
+	DBPort     string
 }
 
 var AppConfig *Config
@@ -24,6 +31,11 @@ func LoadConfig() *Config {
 		ServerPort:         getEnv("SERVER_PORT", "8080"),
 		AppEnv:             getEnv("APP_ENV", "development"),
 		CORSAllowedOrigins: getEnvAsSlice("CORS_ALLOWED_ORIGINS", []string{}),
+		DBHost:             getEnv("DB_HOST", "localhost"),
+		DBUser:             getEnv("DB_USER", "postgres"),
+		DBPassword:         getEnv("DB_PASSWORD", "postgres"),
+		DBName:             getEnv("DB_NAME", "postgres"),
+		DBPort:             getEnv("DB_PORT", "5432"),
 	}
 
 	LogInfo("Config loaded, server port: " + AppConfig.ServerPort)
