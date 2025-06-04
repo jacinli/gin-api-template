@@ -39,3 +39,25 @@ func GetUserHandler(c *gin.Context) {
 
 	constants.Success(c, user)
 }
+
+type GetUserRequest struct {
+	ID uint `json:"id" binding:"required"`
+}
+
+func GetUserHandlerByPost(c *gin.Context) {
+	utils.LogInfo("Handler: Get user called")
+
+	var req GetUserRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		constants.BadRequest(c, "参数错误")
+		return
+	}
+
+	user, err := services.GetUserByID(req.ID)
+	if err != nil {
+		constants.InternalServerError(c, "获取用户失败")
+		return
+	}
+
+	constants.Success(c, user)
+}
