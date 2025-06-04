@@ -9,6 +9,6 @@ import (
 func setupUserRoutes(r *gin.Engine) {
 	users := r.Group("/api/users")
 	{
-		users.GET("/:id", handlers.GetUserHandler) // 只要这一个
+		users.POST("/:id", handlers.GetUserHandler) // 只要这一个
 	}
 }
