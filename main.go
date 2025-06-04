@@ -22,7 +22,7 @@ func main() {
 	defer infra.ClosePG()
 
 	// 3. 运行数据库迁移
-	infra.RunPGMigrations()
+	// infra.RunPGMigrations()
 
 	// 4. 初始化路由
 	r := router.SetupRouter()
