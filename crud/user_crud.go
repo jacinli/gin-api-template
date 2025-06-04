@@ -83,18 +83,3 @@ func DeleteUser(id uint) error {
 
 	return nil
 }
-
-// GetAllUsers 获取所有用户列表
-func GetAllUsers(limit, offset int) ([]models.User, error) {
-	utils.LogInfo("CRUD: Getting all users")
-
-	var users []models.User
-	err := infra.GetDB().Where("yn = ?", true).Limit(limit).Offset(offset).Find(&users).Error
-
-	if err != nil {
-		utils.LogError("CRUD: Failed to get users: " + err.Error())
-		return nil, err
-	}
-
-	return users, nil
-}

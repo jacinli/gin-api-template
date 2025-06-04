@@ -27,7 +27,19 @@ deps:
 
 # 运行测试
 test:
-	go test ./...
+	go test ./tests/
+
+# 运行测试并显示覆盖率
+test-cover:
+	go test -cover ./tests/
+
+# 运行特定测试
+test-user:
+	go test ./tests/ -run TestGetUserByID
+
+# 运行测试 - 详细输出
+test-verbose:
+	go test -v ./tests/
 
 # 格式化代码
 fmt:

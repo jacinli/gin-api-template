@@ -8,16 +8,14 @@ import (
 	"gin-api-template/utils"
 )
 
-// UserResponse 用户响应结构 - 序列化后的数据
-type UserResponse struct {
-	ID         uint   `json:"id"`
-	Phone      string `json:"phone"`
-	CreateTime string `json:"create_time"`
-	UpdateTime string `json:"update_time"`
+// CreateUserRequest 创建用户请求结构
+type CreateUserRequest struct {
+	Phone    string `json:"phone" binding:"required"`
+	Password string `json:"password" binding:"required,min=6"`
 }
 
-// GetUserByID 根据ID获取用户 - 返回序列化数据
-func GetUserByID(id uint) (*UserResponse, error) {
+// GetUserByID 根据ID获取用户 - 直接返回模型 (已有 json 标签)
+func GetUserByID(id uint) (*models.User, error) {
 	utils.LogInfo("Service: Getting user by ID")
 
 	// 调用 CRUD 层
@@ -26,23 +24,12 @@ func GetUserByID(id uint) (*UserResponse, error) {
 		return nil, err
 	}
 
-	if user == nil {
-		return nil, nil // 用户不存在
-	}
-
-	// 转换为响应格式
-	response := &UserResponse{
-		ID:         user.Id,
-		Phone:      user.Phone,
-		CreateTime: user.CreateTime.Format("2006-01-02 15:04:05"),
-		UpdateTime: user.UpdateTime.Format("2006-01-02 15:04:05"),
-	}
-
-	return response, nil
+	// 直接返回模型，models.User 已经有 json 标签了
+	return user, nil
 }
 
 // GetUserByPhone 根据手机号获取用户
-func GetUserByPhone(phone string) (*UserResponse, error) {
+func GetUserByPhone(phone string) (*models.User, error) {
 	utils.LogInfo("Service: Getting user by phone")
 
 	user, err := crud.GetUserByPhone(phone)
@@ -50,28 +37,11 @@ func GetUserByPhone(phone string) (*UserResponse, error) {
 		return nil, err
 	}
 
-	if user == nil {
-		return nil, nil
-	}
-
-	response := &UserResponse{
-		ID:         user.Id,
-		Phone:      user.Phone,
-		CreateTime: user.CreateTime.Format("2006-01-02 15:04:05"),
-		UpdateTime: user.UpdateTime.Format("2006-01-02 15:04:05"),
-	}
-
-	return response, nil
-}
-
-// CreateUserRequest 创建用户请求结构
-type CreateUserRequest struct {
-	Phone    string `json:"phone" binding:"required"`
-	Password string `json:"password" binding:"required,min=6"`
+	return user, nil
 }
 
 // CreateUser 创建用户
-func CreateUser(req *CreateUserRequest) (*UserResponse, error) {
+func CreateUser(req *CreateUserRequest) (*models.User, error) {
 	utils.LogInfo("Service: Creating user")
 
 	// 检查用户是否已存在
@@ -98,31 +68,6 @@ func CreateUser(req *CreateUserRequest) (*UserResponse, error) {
 		return nil, err
 	}
 
-	// 返回创建的用户信息
-	return GetUserByID(user.Id)
-}
-
-// GetUserList 获取用户列表
-func GetUserList(page, pageSize int) ([]UserResponse, error) {
-	utils.LogInfo("Service: Getting user list")
-
-	offset := (page - 1) * pageSize
-	users, err := crud.GetAllUsers(pageSize, offset)
-	if err != nil {
-		return nil, err
-	}
-
-	// 转换为响应格式
-	var responses []UserResponse
-	for _, user := range users {
-		response := UserResponse{
-			ID:         user.Id,
-			Phone:      user.Phone,
-			CreateTime: user.CreateTime.Format("2006-01-02 15:04:05"),
-			UpdateTime: user.UpdateTime.Format("2006-01-02 15:04:05"),
-		}
-		responses = append(responses, response)
-	}
-
-	return responses, nil
+	// 返回创建的用户信息 (Password 字段有 json:"-"，不会序列化)
+	return user, nil
 }
