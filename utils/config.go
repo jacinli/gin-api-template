@@ -2,6 +2,7 @@ package utils
 
 import (
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/joho/godotenv"
@@ -20,6 +21,11 @@ type Config struct {
 	DBPassword string
 	DBName     string
 	DBPort     string
+
+	// JWT 相关
+	JWTSecret                   string
+	JWTAccessTokenExpireMinutes int
+	JWTRefreshTokenExpireHours  int
 }
 
 var AppConfig *Config
@@ -36,6 +42,11 @@ func LoadConfig() *Config {
 		DBPassword:         getEnv("DB_PASSWORD", "postgres"),
 		DBName:             getEnv("DB_NAME", "postgres"),
 		DBPort:             getEnv("DB_PORT", "5432"),
+
+		// jwt 相关
+		JWTSecret:                   getEnv("JWT_SECRET", "your-default-secret-key"),
+		JWTAccessTokenExpireMinutes: getEnvAsInt("JWT_ACCESS_TOKEN_EXPIRE_MINUTES", 15),
+		JWTRefreshTokenExpireHours:  getEnvAsInt("JWT_REFRESH_TOKEN_EXPIRE_HOURS", 168), // 7 days
 	}
 
 	LogInfo("Config loaded, server port: " + AppConfig.ServerPort)
@@ -60,6 +71,15 @@ func getEnvAsSlice(key string, defaultValue []string) []string {
 		}
 		if len(result) > 0 {
 			return result
+		}
+	}
+	return defaultValue
+}
+
+func getEnvAsInt(key string, defaultValue int) int {
+	if value := os.Getenv(key); value != "" {
+		if intValue, err := strconv.Atoi(value); err == nil {
+			return intValue
 		}
 	}
 	return defaultValue
