@@ -11,8 +11,16 @@ import (
 // AuthMiddleware JWT 认证中间件
 func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		//白名单url 设置
+		whiteList := constants.WhiteAuthUrl
+		requestPath := c.Request.URL.Path
+		for _, path := range whiteList {
+			if requestPath == path { // 或者用 strings.Contains(requestPath, path)
+				c.Next()
+				return
+			}
+		}
 		utils.LogInfo("认证中间件开始验证")
-
 		// 从请求头获取授权信息
 		authHeader := c.GetHeader("Authorization")
 		if authHeader == "" {
