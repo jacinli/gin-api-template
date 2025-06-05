@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"strconv"
 
 	"gin-api-template/constants"
@@ -52,7 +53,19 @@ func GetUserHandlerByPost(c *gin.Context) {
 		constants.BadRequest(c, "参数错误")
 		return
 	}
+	userIDRaw, exists := c.Get("user_id")
+	if !exists {
+		constants.BadRequest(c, "用户ID不存在")
+		return
+	}
+	fmt.Println("userIDRaw", userIDRaw)
+	userID, ok := userIDRaw.(uint) // 或者根据你 claims.UserID 的类型来断言，比如 uint、int64
+	if !ok {
+		constants.BadRequest(c, "用户ID类型错误")
+		return
+	}
 
+	utils.LogInfo(fmt.Sprintf("当前用户ID: %d", userID))
 	user, err := services.GetUserByID(req.ID)
 	if err != nil {
 		constants.InternalServerError(c, "获取用户失败")
