@@ -10,7 +10,7 @@ import (
 func TestJwt(t *testing.T) {
 	utils.LoadConfig()
 
-	res, err := utils.GenerateTokenPair(1, "13800138000")
+	res, err := utils.GenerateTokenPair(8, "13800138000")
 	if err != nil {
 		t.Errorf("Expected no error, got %v", err)
 	}

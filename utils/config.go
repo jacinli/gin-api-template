@@ -45,7 +45,7 @@ func LoadConfig() *Config {
 
 		// jwt 相关
 		JWTSecret:                   getEnv("JWT_SECRET", "your-default-secret-key"),
-		JWTAccessTokenExpireMinutes: getEnvAsInt("JWT_ACCESS_TOKEN_EXPIRE_MINUTES", 15),
+		JWTAccessTokenExpireMinutes: getEnvAsInt("JWT_ACCESS_TOKEN_EXPIRE_MINUTES", 60*24*7),
 		JWTRefreshTokenExpireHours:  getEnvAsInt("JWT_REFRESH_TOKEN_EXPIRE_HOURS", 168), // 7 days
 	}
 

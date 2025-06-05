@@ -23,6 +23,9 @@ func SetupRouter() *gin.Engine {
 	// 使用我们自定义的日志中间件
 	r.Use(middlewares.LoggingMiddleware())
 
+	// 使用 JWT 认证中间件
+	r.Use(middlewares.AuthMiddleware())
+
 	// 注册各个模块的路由
 	setupHealthRoutes(r)
 	setupUserRoutes(r)
