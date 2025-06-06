@@ -29,6 +29,7 @@ func SetupRouter() *gin.Engine {
 	// 注册各个模块的路由
 	setupHealthRoutes(r)
 	setupUserRoutes(r)
+	setupWebSocketRoutes(r)
 	// setupUserRoutes(r)
 	// setupAuthRoutes(r)
 	// setupProductRoutes(r)
